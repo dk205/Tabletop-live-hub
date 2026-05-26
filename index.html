@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Tabletop Live Hub</title>
+
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: #0b0b0b;
+      color: white;
+    }
+
+    /* HEADER */
+    header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 12px 20px;
+      background: #151515;
+      border-bottom: 1px solid #2a2a2a;
+    }
+
+    .title {
+      font-weight: bold;
+      letter-spacing: 1px;
+    }
+
+    .live {
+      font-weight: bold;
+      color: gray;
+    }
+
+    /* MAIN LAYOUT */
+    .container {
+      display: flex;
+      height: calc(100vh - 55px);
+    }
+
+    /* LEFT STREAM */
+    .stream {
+      flex: 2;
+      background: black;
+    }
+
+    .stream iframe {
+      width: 100%;
+      height: 100%;
+      border: none;
+    }
+
+    /* RIGHT PANEL */
+    .panel {
+      flex: 1;
+      background: #121212;
+      border-left: 1px solid #2a2a2a;
+      padding: 20px;
+    }
+
+    .card {
+      background: #1e1e1e;
+      padding: 12px;
+      margin-top: 10px;
+      border-radius: 8px;
+      cursor: pointer;
+    }
+
+    .card:hover {
+      background: #2a2a2a;
+    }
+
+    .disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+
+    .muted {
+      color: #aaa;
+      font-size: 14px;
+    }
+  </style>
+</head>
+
+<body>
+
+<header>
+  <div class="title">⚔ Tabletop Live Hub</div>
+  <div id="liveStatus" class="live">● CHECKING...</div>
+</header>
+
+<div class="container">
+
+  <!-- LEFT: YOUTUBE LIVE STREAM -->
+  <div class="stream">
+    <iframe
+      src="https://www.youtube.com/@dimitriskiourtsoglou5640/live"
+      allowfullscreen>
+    </iframe>
+  </div>
+
+  <!-- RIGHT: FUTURE INTERACTIVE PANEL -->
+  <div class="panel">
+
+    <h3>Interactive Battlefield</h3>
+
+    <p class="muted">
+      Live 3D viewer coming soon.
+    </p>
+
+    <div class="card disabled">Enter Battlefield</div>
+    <div class="card disabled">Camera Controls</div>
+    <div class="card disabled">Unit Inspection</div>
+
+    <hr style="border:1px solid #2a2a2a; margin:20px 0;">
+
+    <p class="muted">
+      Tabletop Live Hub is a real-time tabletop wargaming platform combining live streaming and future interactive simulation tools.
+    </p>
+
+  </div>
+
+</div>
+
+<!-- LIVE / OFFLINE DETECTION -->
+<script>
+const API_KEY = "AIzaSyAgIvaNDbmMkoaLZ1D5mhr2yTXgx-JNpDo";
+const CHANNEL_ID = "dimitriskiourtsoglou5640";
+
+async function checkLiveStatus() {
+  const statusEl = document.getElementById("liveStatus");
+
+  try {
+    const url =
+      `https://www.googleapis.com/youtube/v3/search?part=snippet&channelId=${CHANNEL_ID}&eventType=live&type=video&key=${API_KEY}`;
+
+    const res = await fetch(url);
+    const data = await res.json();
+
+    if (data.items && data.items.length > 0) {
+      statusEl.innerText = "● LIVE";
+      statusEl.style.color = "red";
+    } else {
+      statusEl.innerText = "● OFFLINE";
+      statusEl.style.color = "gray";
+    }
+  } catch (e) {
+    statusEl.innerText = "● ERROR";
+    statusEl.style.color = "orange";
+  }
+}
+
+checkLiveStatus();
+setInterval(checkLiveStatus, 30000);
+</script>
+
+</body>
+</html>
