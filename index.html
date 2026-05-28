@@ -1,167 +1,241 @@
+```html
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-  <meta charset="UTF-8">
-  <title>Tabletop Live Hub</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tabletop Live Hub</title>
 
-  <style>
-    body {
-      margin: 0;
-      font-family: Arial, sans-serif;
-      background: #0b0b0b;
-      color: white;
-    }
+    <style>
+        * {
+            box-sizing: border-box;
+        }
 
-    /* HEADER */
-    header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding: 12px 20px;
-      background: #151515;
-      border-bottom: 1px solid #2a2a2a;
-    }
+        body {
+            margin: 0;
+            overflow: hidden;
+            font-family: Arial, sans-serif;
+            background: #0b0b0b;
+            color: white;
+        }
 
-    .title {
-      font-weight: bold;
-      letter-spacing: 1px;
-    }
+        /* HEADER */
 
-    .live {
-      font-weight: bold;
-      color: gray;
-    }
+        header {
+            height: 60px;
+            background: #141414;
+            border-bottom: 1px solid #2c2c2c;
 
-    /* MAIN LAYOUT */
-    .container {
-      display: flex;
-      height: calc(100vh - 55px);
-    }
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
 
-    /* LEFT STREAM */
-    .stream {
-      flex: 2;
-      background: black;
-    }
+            padding: 0 20px;
+        }
 
-    .stream iframe {
-      width: 100%;
-      height: 100%;
-      border: none;
-    }
+        .title {
+            font-size: 20px;
+            font-weight: bold;
+            letter-spacing: 1px;
+        }
 
-    /* RIGHT PANEL */
-    .panel {
-      flex: 1;
-      background: #121212;
-      border-left: 1px solid #2a2a2a;
-      padding: 20px;
-    }
+        #liveStatus {
+            font-weight: bold;
+            color: gray;
+        }
 
-    .card {
-      background: #1e1e1e;
-      padding: 12px;
-      margin-top: 10px;
-      border-radius: 8px;
-      cursor: pointer;
-    }
+        /* MAIN LAYOUT */
 
-    .card:hover {
-      background: #2a2a2a;
-    }
+        .container {
+            display: flex;
+            height: calc(100vh - 60px);
+        }
 
-    .disabled {
-      opacity: 0.5;
-      cursor: not-allowed;
-    }
+        /* LEFT SIDE */
 
-    .muted {
-      color: #aaa;
-      font-size: 14px;
-    }
-  </style>
+        .leftPanel {
+            flex: 2;
+            background: black;
+            border-right: 1px solid #2c2c2c;
+        }
+
+        .leftPanel iframe {
+            width: 100%;
+            height: 100%;
+            border: none;
+        }
+
+        /* RIGHT SIDE */
+
+        .rightPanel {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            background: #111;
+        }
+
+        .viewerHeader {
+            padding: 15px;
+            border-bottom: 1px solid #2c2c2c;
+            background: #161616;
+        }
+
+        .viewerHeader h2 {
+            margin: 0;
+            font-size: 18px;
+        }
+
+        .viewerHeader p {
+            margin-top: 5px;
+            color: #aaa;
+            font-size: 13px;
+        }
+
+        /* UNITY FRAME */
+
+        .unityContainer {
+            flex: 1;
+            background: #000;
+        }
+
+        .unityContainer iframe {
+            width: 100%;
+            height: 100%;
+            border: none;
+        }
+
+        /* FOOTER INFO */
+
+        .footerInfo {
+            padding: 12px;
+            border-top: 1px solid #2c2c2c;
+            background: #161616;
+            color: #888;
+            font-size: 12px;
+        }
+
+    </style>
 </head>
 
 <body>
 
-<header>
-  <div class="title">⚔ Tabletop Live Hub</div>
-  <div id="liveStatus" class="live">● CHECKING...</div>
-</header>
+    <!-- HEADER -->
 
-<div class="container">
+    <header>
 
-  <!-- LEFT: YOUTUBE LIVE STREAM -->
-  <div class="stream">
-    <iframe
-      src="https://www.youtube.com/@dimitriskiourtsoglou5640/live"
-      allowfullscreen>
-    </iframe>
-  </div>
+        <div class="title">
+            ⚔ Tabletop Live Hub
+        </div>
 
-  <!-- RIGHT: FUTURE INTERACTIVE PANEL -->
-  <div class="panel">
+        <div id="liveStatus">
+            ● CHECKING...
+        </div>
 
-    <h3>Interactive Battlefield</h3>
+    </header>
 
-   <div class="panel">
+    <!-- MAIN -->
 
-    <h3>Interactive Battlefield</h3>
+    <div class="container">
 
-    <iframe
-        src="unity/index.html"
-        width="100%"
-        height="600"
-        style="border:none;">
-    </iframe>
+        <!-- LEFT : YOUTUBE -->
 
-</div>
+        <div class="leftPanel">
 
-    <div class="card disabled">Enter Battlefield</div>
-    <div class="card disabled">Camera Controls</div>
-    <div class="card disabled">Unit Inspection</div>
+            <iframe
+                src="https://www.youtube-nocookie.com/embed/live_stream?channel=YOUR_CHANNEL_ID&autoplay=1"
+                title="YouTube livestream"
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                allowfullscreen>
+            </iframe>
 
-    <hr style="border:1px solid #2a2a2a; margin:20px 0;">
+        </div>
 
-    <p class="muted">
-      Tabletop Live Hub is a real-time tabletop wargaming platform combining live streaming and future interactive simulation tools.
-    </p>
+        <!-- RIGHT : UNITY -->
 
-  </div>
+        <div class="rightPanel">
 
-</div>
+            <div class="viewerHeader">
 
-<!-- LIVE / OFFLINE DETECTION -->
-<script>
-const API_KEY = "AIzaSyAgIvaNDbmMkoaLZ1D5mhr2yTXgx-JNpDo";
-const CHANNEL_ID = "dimitriskiourtsoglou5640";
+                <h2>Interactive Battlefield</h2>
 
-async function checkLiveStatus() {
-  const statusEl = document.getElementById("liveStatus");
+                <p>
+                    Real-time digital battlefield viewer
+                </p>
 
-  try {
-    const url =
-      `https://www.googleapis.com/youtube/v3/search?part=snippet&channelId=${CHANNEL_ID}&eventType=live&type=video&key=${API_KEY}`;
+            </div>
 
-    const res = await fetch(url);
-    const data = await res.json();
+            <div class="unityContainer">
 
-    if (data.items && data.items.length > 0) {
-      statusEl.innerText = "● LIVE";
-      statusEl.style.color = "red";
-    } else {
-      statusEl.innerText = "● OFFLINE";
-      statusEl.style.color = "gray";
-    }
-  } catch (e) {
-    statusEl.innerText = "● ERROR";
-    statusEl.style.color = "orange";
-  }
-}
+                <!-- YOUR UNITY WEBGL BUILD -->
 
-checkLiveStatus();
-setInterval(checkLiveStatus, 30000);
-</script>
+                <iframe
+                    src="unity/index.html">
+                </iframe>
+
+            </div>
+
+            <div class="footerInfo">
+
+                Tabletop Live Hub • Experimental RTS-style tabletop viewer system
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <!-- LIVE STATUS SCRIPT -->
+
+    <script>
+
+        const API_KEY = "AIzaSyAgIvaNDbmMkoaLZ1D5mhr2yTXgx-JNpDo";
+        const CHANNEL_ID = "UCJf90pitXPeGyEpL1T7zfig";
+
+        async function checkLiveStatus() {
+
+            const status = document.getElementById("liveStatus");
+
+            try {
+
+                const response = await fetch(
+                    `https://www.googleapis.com/youtube/v3/search?part=snippet&channelId=${CHANNEL_ID}&eventType=live&type=video&key=${API_KEY}`
+                );
+
+                const data = await response.json();
+
+                if (data.items && data.items.length > 0) {
+
+                    status.innerHTML = "● LIVE";
+                    status.style.color = "red";
+
+                }
+                else {
+
+                    status.innerHTML = "● OFFLINE";
+                    status.style.color = "gray";
+
+                }
+
+            }
+            catch (error) {
+
+                status.innerHTML = "● ERROR";
+                status.style.color = "orange";
+
+                console.error(error);
+
+            }
+
+        }
+
+        checkLiveStatus();
+
+        setInterval(checkLiveStatus, 30000);
+
+    </script>
 
 </body>
+
 </html>
+```
