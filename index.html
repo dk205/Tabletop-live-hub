@@ -19,7 +19,6 @@
             color: white;
         }
 
-        /* HEADER */
         header {
             height: 60px;
             background: #141414;
@@ -43,13 +42,11 @@
             color: gray;
         }
 
-        /* MAIN LAYOUT */
         .container {
             display: flex;
             height: calc(100vh - 60px);
         }
 
-        /* LEFT */
         .leftPanel {
             flex: 2;
             background: black;
@@ -62,7 +59,6 @@
             border: none;
         }
 
-        /* RIGHT */
         .rightPanel {
             flex: 1;
             display: flex;
@@ -87,9 +83,29 @@
             font-size: 13px;
         }
 
+        .controls {
+            padding: 10px 15px;
+            border-bottom: 1px solid #2c2c2c;
+            background: #151515;
+        }
+
+        button {
+            padding: 10px 12px;
+            background: #2d6cdf;
+            color: white;
+            border: none;
+            cursor: pointer;
+            border-radius: 4px;
+            font-weight: bold;
+        }
+
+        button:hover {
+            background: #1f56c0;
+        }
+
         .unityContainer {
             flex: 1;
-            background: black;
+            background: #000;
         }
 
         .unityContainer iframe {
@@ -105,26 +121,6 @@
             color: #888;
             font-size: 12px;
         }
-
-        /* MOBILE */
-        @media (max-width: 768px) {
-            body {
-                overflow: auto;
-            }
-
-            .container {
-                flex-direction: column;
-                height: auto;
-            }
-
-            .leftPanel {
-                height: 300px;
-            }
-
-            .rightPanel {
-                height: calc(100vh - 360px);
-            }
-        }
     </style>
 </head>
 
@@ -132,14 +128,14 @@
 
     <!-- HEADER -->
     <header>
-        <div class="title">⚔ Tabletop Live Hub2</div>
+        <div class="title">⚔ Tabletop Live Hub</div>
         <div id="liveStatus">● CHECKING...</div>
     </header>
 
     <!-- MAIN -->
     <div class="container">
 
-        <!-- LEFT PANEL -->
+        <!-- LEFT: YOUTUBE -->
         <div class="leftPanel">
             <iframe
                 src="https://www.youtube-nocookie.com/embed/wak4aJsvEEM"
@@ -149,12 +145,17 @@
             </iframe>
         </div>
 
-        <!-- RIGHT PANEL -->
+        <!-- RIGHT: UNITY -->
         <div class="rightPanel">
 
             <div class="viewerHeader">
-                <h2>Interactive Battlefield2</h2>
+                <h2>Interactive Battlefield</h2>
                 <p>Real-time digital battlefield viewer</p>
+            </div>
+
+            <!-- CONTROLS -->
+            <div class="controls">
+                <button onclick="moveUnit()">Move Unit</button>
             </div>
 
             <div class="unityContainer">
@@ -166,39 +167,44 @@
             </div>
 
         </div>
-
     </div>
 
-    <!-- UNITY COMMANDS -->
     <script>
-        let unityInstance = null;
+        // 🔥 UNITY COMMAND
+        function moveUnit() {
 
-        function moveRaptors() {
-            if (!unityInstance) return;
+            const command = "10-40-1,15,0,8";
 
-            unityInstance.SendMessage(
-                'BattleClientManager',
-                'MoveUnitCommand',
-                '10-40-1,15,0,8'
-            );
+            // If unityInstance is globally exposed (best case)
+            if (typeof unityInstance !== "undefined" && unityInstance) {
+
+                unityInstance.SendMessage(
+                    "BattleClientManager",
+                    "MoveUnitCommand",
+                    command
+                );
+
+                return;
+            }
+
+            // Fallback: iframe bridge (optional future-proofing)
+            const iframe = document.querySelector(".unityContainer iframe");
+
+            if (iframe && iframe.contentWindow) {
+                iframe.contentWindow.postMessage({
+                    type: "MOVE_UNIT",
+                    payload: command
+                }, "*");
+            }
         }
 
-        function nextPhase() {
-            if (!unityInstance) return;
 
-            unityInstance.SendMessage(
-                'BattleClientManager',
-                'AdvancePhase'
-            );
-        }
-    </script>
-
-    <!-- LIVE STATUS -->
-    <script>
-        const API_KEY = "YOUR_API_KEY_HERE"; // ⚠️ restrict this in Google Cloud Console
+        // 🔵 YOUTUBE LIVE STATUS
+        const API_KEY = "AIzaSyAgIvaNDbmMkoaLZ1D5mhr2yTXgx-JNpDo";
         const CHANNEL_ID = "UCJf90pitXPeGyEpL1T7zfig";
 
         async function checkLiveStatus() {
+
             const status = document.getElementById("liveStatus");
 
             try {
@@ -216,15 +222,16 @@
                     status.style.color = "gray";
                 }
 
-            } catch (err) {
-                console.error(err);
+            } catch (error) {
                 status.innerHTML = "● ERROR";
                 status.style.color = "orange";
+                console.error(error);
             }
         }
 
         checkLiveStatus();
         setInterval(checkLiveStatus, 30000);
+
     </script>
 
 </body>
