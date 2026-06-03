@@ -23,18 +23,15 @@
             height: 60px;
             background: #141414;
             border-bottom: 1px solid #2c2c2c;
-
             display: flex;
             justify-content: space-between;
             align-items: center;
-
             padding: 0 20px;
         }
 
         .title {
             font-size: 20px;
             font-weight: bold;
-            letter-spacing: 1px;
         }
 
         #liveStatus {
@@ -90,13 +87,13 @@
         }
 
         button {
-            padding: 10px 12px;
+            padding: 10px 14px;
             background: #2d6cdf;
-            color: white;
             border: none;
-            cursor: pointer;
-            border-radius: 4px;
+            color: white;
             font-weight: bold;
+            border-radius: 4px;
+            cursor: pointer;
         }
 
         button:hover {
@@ -105,7 +102,7 @@
 
         .unityContainer {
             flex: 1;
-            background: #000;
+            background: black;
         }
 
         .unityContainer iframe {
@@ -128,19 +125,16 @@
 
     <!-- HEADER -->
     <header>
-        <div class="title">⚔ Tabletop Live Hub</div>
+        <div class="title">⚔ Tabletop Live Hub32</div>
         <div id="liveStatus">● CHECKING...</div>
     </header>
 
-    <!-- MAIN -->
     <div class="container">
 
         <!-- LEFT: YOUTUBE -->
         <div class="leftPanel">
             <iframe
                 src="https://www.youtube-nocookie.com/embed/wak4aJsvEEM"
-                title="YouTube Live Stream"
-                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                 allowfullscreen>
             </iframe>
         </div>
@@ -153,53 +147,60 @@
                 <p>Real-time digital battlefield viewer</p>
             </div>
 
-            <!-- CONTROLS -->
+            <!-- CONTROL BUTTONS -->
             <div class="controls">
                 <button onclick="moveUnit()">Move Unit</button>
             </div>
 
+            <!-- UNITY -->
             <div class="unityContainer">
-                <iframe src="unity/index.html"></iframe>
+                <iframe id="unityFrame" src="unity/index.html"></iframe>
             </div>
 
             <div class="footerInfo">
-                Tabletop Live Hub • Experimental RTS-style tabletop viewer system
+                Tabletop Live Hub • Experimental RTS Viewer
             </div>
 
         </div>
     </div>
 
     <script>
-        // 🔥 UNITY COMMAND
+
+        // =========================
+        // 🎮 UNITY COMMAND BRIDGE
+        // =========================
+
         function moveUnit() {
 
             const command = "10-40-1,15,0,8";
 
-            // If unityInstance is globally exposed (best case)
-            if (typeof unityInstance !== "undefined" && unityInstance) {
+            const iframe = document.getElementById("unityFrame");
 
-                unityInstance.SendMessage(
-                    "BattleClientManager",
-                    "MoveUnitCommand",
-                    command
-                );
-
+            if (!iframe || !iframe.contentWindow) {
+                console.warn("Unity iframe not ready");
                 return;
             }
 
-            // Fallback: iframe bridge (optional future-proofing)
-            const iframe = document.querySelector(".unityContainer iframe");
+            console.log("Sending command to Unity:", command);
 
-            if (iframe && iframe.contentWindow) {
-                iframe.contentWindow.postMessage({
-                    type: "MOVE_UNIT",
-                    payload: command
-                }, "*");
-            }
+            iframe.contentWindow.postMessage({
+                type: "MOVE_UNIT",
+                payload: command
+            }, "*");
         }
 
+        // =========================
+        // 🧪 DEBUG LISTENER (optional but VERY useful)
+        // =========================
 
-        // 🔵 YOUTUBE LIVE STATUS
+        window.addEventListener("message", (event) => {
+            console.log("Parent received message:", event.data);
+        });
+
+        // =========================
+        // 🔴 YOUTUBE LIVE STATUS
+        // =========================
+
         const API_KEY = "AIzaSyAgIvaNDbmMkoaLZ1D5mhr2yTXgx-JNpDo";
         const CHANNEL_ID = "UCJf90pitXPeGyEpL1T7zfig";
 
@@ -208,11 +209,11 @@
             const status = document.getElementById("liveStatus");
 
             try {
-                const response = await fetch(
+                const res = await fetch(
                     `https://www.googleapis.com/youtube/v3/search?part=snippet&channelId=${CHANNEL_ID}&eventType=live&type=video&key=${API_KEY}`
                 );
 
-                const data = await response.json();
+                const data = await res.json();
 
                 if (data.items && data.items.length > 0) {
                     status.innerHTML = "● LIVE";
@@ -222,10 +223,10 @@
                     status.style.color = "gray";
                 }
 
-            } catch (error) {
+            } catch (err) {
                 status.innerHTML = "● ERROR";
                 status.style.color = "orange";
-                console.error(error);
+                console.error(err);
             }
         }
 
