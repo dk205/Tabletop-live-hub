@@ -1,35 +1,70 @@
 <!DOCTYPE html>
-<html lang="en-us">
-  <head>
-    <meta charset="utf-8">
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-    <title>Unity Web Player | Tabletop-Live</title>
-    <link rel="shortcut icon" href="unity/TemplateData/favicon.ico">
-    <link rel="stylesheet" href="unity/TemplateData/style.css">
-    <script src="unity/TemplateData/UnityProgress.js"></script>
-    <script src="unity/Build/UnityLoader.js"></script>
- 
-<script>
-var unityInstance= UnityLoader.instantiate("unityContainer", "unity/build/_Build.json", {onProgress: UnityProgress});
-</script>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WebGL and YouTube Example</title>
+    <style>
+        body { margin: 0; }
+        canvas { display: block; width: 100vw; height: 100vh; }
+        #youtube-container { position: absolute; top: 20px; left: 20px; width: 300px; height: 200px; }
+    </style>
+</head>
+<body>
+    <!-- WebGL Canvas -->
+    <canvas id="webgl-canvas"></canvas>
 
- </head>
-  <body>
-    <div id="unity-container" class="unity-desktop">
-      <canvas id="unity-canvas" width=960 height=600 tabindex="-1"></canvas>
-      <div id="unity-loading-bar">
-        <div id="unity-logo"></div>
-        <div id="unity-progress-bar-empty">
-          <div id="unity-progress-bar-full"></div>
-        </div>
-      </div>
-      <div id="unity-warning"> </div>
-      <div id="unity-footer">
-        <div id="unity-logo-title-footer"></div>
-        <div id="unity-fullscreen-button"></div>
-        <div id="unity-build-title">Tabletop-Live</div>
-      </div>
+    <!-- YouTube Video in an iframe -->
+    <div id="youtube-container">
+        <iframe width="300" height="200" 
+                src="https://www.youtube.com/embed/dQw4w9WgXcQ" 
+                frameborder="0" 
+                allow="autoplay; encrypted-media" 
+                allowfullscreen>
+        </iframe>
     </div>
-<div style="border:solid 1 px black; width 200px; height:30px; margin:auto; text-align:center" onclick="unityInstance.SendMessage(  "BattleClientManager","MoveUnitCommand","1,1,1">red</div>
- </body>
+
+    <!-- Button to send a message to WebGL -->
+    <button id="trigger-button" style="position: absolute; top: 250px; left: 20px;">
+        Trigger WebGL Action
+    </button>
+
+    <script>
+        // Example: Initialize WebGL and attach to the canvas
+        const canvas = document.getElementById('webgl-canvas');
+        const gl = canvas.getContext('webgl');
+
+        // Resize canvas to fit the window
+        function resizeCanvas() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        }
+        window.addEventListener('resize', resizeCanvas);
+        resizeCanvas();
+
+        // Example WebGL setup (placeholder)
+        function initWebGL() {
+            if (!gl) {
+                console.error('WebGL not supported!');
+                return;
+            }
+            gl.clearColor(0.0, 0.0, 0.0, 1.0);
+            gl.clear(gl.COLOR_BUFFER_BIT);
+            // ... other WebGL setup code
+        }
+        initWebGL();
+
+        // Define the action that we will trigger inside WebGL
+        function webGLAction() {
+            // This function would contain logic inside your WebGL app
+            console.log('WebGL action triggered!');
+            // For example, you could update a uniform, start an animation, etc.
+        }
+
+        // Add event listener to the button
+        document.getElementById('trigger-button').addEventListener('click', () => {
+            webGLAction();
+        });
+    </script>
+</body>
 </html>
