@@ -1,70 +1,240 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>WebGL and YouTube Example</title>
+    <title>Tabletop Live Hub</title>
+
     <style>
-        body { margin: 0; }
-        canvas { display: block; width: 100vw; height: 100vh; }
-        #youtube-container { position: absolute; top: 20px; left: 20px; width: 300px; height: 200px; }
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            overflow: hidden;
+            font-family: Arial, sans-serif;
+            background: #0b0b0b;
+            color: white;
+        }
+
+        header {
+            height: 60px;
+            background: #141414;
+            border-bottom: 1px solid #2c2c2c;
+
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+
+            padding: 0 20px;
+        }
+
+        .title {
+            font-size: 20px;
+            font-weight: bold;
+            letter-spacing: 1px;
+        }
+
+        #liveStatus {
+            font-weight: bold;
+            color: gray;
+        }
+
+        .container {
+            display: flex;
+            height: calc(100vh - 60px);
+        }
+
+        .leftPanel {
+            flex: 2;
+            background: black;
+            border-right: 1px solid #2c2c2c;
+        }
+
+        .leftPanel iframe {
+            width: 100%;
+            height: 100%;
+            border: none;
+        }
+
+        .rightPanel {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            background: #111;
+        }
+
+        .viewerHeader {
+            padding: 15px;
+            border-bottom: 1px solid #2c2c2c;
+            background: #161616;
+        }
+
+        .viewerHeader h2 {
+            margin: 0;
+            font-size: 18px;
+        }
+
+        .viewerHeader p {
+            margin-top: 5px;
+            color: #aaa;
+            font-size: 13px;
+        }
+
+        .controls {
+            padding: 10px 15px;
+            border-bottom: 1px solid #2c2c2c;
+            background: #151515;
+        }
+
+        button {
+            padding: 10px 12px;
+            background: #2d6cdf;
+            color: white;
+            border: none;
+            cursor: pointer;
+            border-radius: 4px;
+            font-weight: bold;
+        }
+
+        button:hover {
+            background: #1f56c0;
+        }
+
+        .unityContainer {
+            flex: 1;
+            background: #000;
+        }
+
+        .unityContainer iframe {
+            width: 100%;
+            height: 100%;
+            border: none;
+        }
+
+        .footerInfo {
+            padding: 12px;
+            border-top: 1px solid #2c2c2c;
+            background: #161616;
+            color: #888;
+            font-size: 12px;
+        }
     </style>
 </head>
-<body>
-    <!-- WebGL Canvas -->
-    <canvas id="webgl-canvas"></canvas>
 
-    <!-- YouTube Video in an iframe -->
-    <div id="youtube-container">
-        <iframe width="300" height="200" 
-                src="https://www.youtube.com/embed/dQw4w9WgXcQ" 
-                frameborder="0" 
-                allow="autoplay; encrypted-media" 
+<body>
+
+    <!-- HEADER -->
+    <header>
+        <div class="title">⚔ Tabletop Live Hub</div>
+        <div id="liveStatus">● CHECKING...</div>
+    </header>
+
+    <!-- MAIN -->
+    <div class="container">
+
+        <!-- LEFT: YOUTUBE -->
+        <div class="leftPanel">
+            <iframe
+                src="https://www.youtube-nocookie.com/embed/wak4aJsvEEM"
+                title="YouTube Live Stream"
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                 allowfullscreen>
-        </iframe>
+            </iframe>
+        </div>
+
+        <!-- RIGHT: UNITY -->
+        <div class="rightPanel">
+
+            <div class="viewerHeader">
+                <h2>Interactive Battlefield</h2>
+                <p>Real-time digital battlefield viewer</p>
+            </div>
+
+            <!-- CONTROLS -->
+            <div class="controls">
+                <button onclick="moveUnit()">Move Unit</button>
+            </div>
+
+            <div class="unityContainer">
+                <iframe src="unity/index.html"></iframe>
+            </div>
+
+            <div class="footerInfo">
+                Tabletop Live Hub • Experimental RTS-style tabletop viewer system
+            </div>
+
+        </div>
     </div>
 
-    <!-- Button to send a message to WebGL -->
-    <button id="trigger-button" style="position: absolute; top: 250px; left: 20px;">
-        Trigger WebGL Action
-    </button>
-
     <script>
-        // Example: Initialize WebGL and attach to the canvas
-        const canvas = document.getElementById('webgl-canvas');
-        const gl = canvas.getContext('webgl');
+        // 🔥 UNITY COMMAND
+        function moveUnit() {
 
-        // Resize canvas to fit the window
-        function resizeCanvas() {
-            canvas.width = window.innerWidth;
-            canvas.height = window.innerHeight;
-        }
-        window.addEventListener('resize', resizeCanvas);
-        resizeCanvas();
+            const command = "10-40-1,15,0,8";
 
-        // Example WebGL setup (placeholder)
-        function initWebGL() {
-            if (!gl) {
-                console.error('WebGL not supported!');
+            // If unityInstance is globally exposed (best case)
+            if (typeof unityInstance !== "undefined" && unityInstance) {
+
+                unityInstance.SendMessage(
+                    "BattleClientManager",
+                    "MoveUnitCommand",
+                    command
+                );
+
                 return;
             }
-            gl.clearColor(0.0, 0.0, 0.0, 1.0);
-            gl.clear(gl.COLOR_BUFFER_BIT);
-            // ... other WebGL setup code
-        }
-        initWebGL();
 
-        // Define the action that we will trigger inside WebGL
-        function webGLAction() {
-            // This function would contain logic inside your WebGL app
-            console.log('WebGL action triggered!');
-            // For example, you could update a uniform, start an animation, etc.
+            // Fallback: iframe bridge (optional future-proofing)
+            const iframe = document.querySelector(".unityContainer iframe");
+
+            if (iframe && iframe.contentWindow) {
+                iframe.contentWindow.postMessage({
+                    type: "MOVE_UNIT",
+                    payload: command
+                }, "*");
+            }
         }
 
-        // Add event listener to the button
-        document.getElementById('trigger-button').addEventListener('click', () => {
-            webGLAction();
-        });
+
+        // 🔵 YOUTUBE LIVE STATUS
+        const API_KEY = "AIzaSyAgIvaNDbmMkoaLZ1D5mhr2yTXgx-JNpDo";
+        const CHANNEL_ID = "UCJf90pitXPeGyEpL1T7zfig";
+
+        async function checkLiveStatus() {
+
+            const status = document.getElementById("liveStatus");
+
+            try {
+                const response = await fetch(
+                    `https://www.googleapis.com/youtube/v3/search?part=snippet&channelId=${CHANNEL_ID}&eventType=live&type=video&key=${API_KEY}`
+                );
+
+                const data = await response.json();
+
+                if (data.items && data.items.length > 0) {
+                    status.innerHTML = "● LIVE";
+                    status.style.color = "red";
+                } else {
+                    status.innerHTML = "● OFFLINE";
+                    status.style.color = "gray";
+                }
+
+            } catch (error) {
+                status.innerHTML = "● ERROR";
+                status.style.color = "orange";
+                console.error(error);
+            }
+        }
+
+        checkLiveStatus();
+        setInterval(checkLiveStatus, 30000);
+
     </script>
+
 </body>
+
 </html>
+
