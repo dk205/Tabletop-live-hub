@@ -128,6 +128,22 @@
 
       document.body.appendChild(script);
 
+window.addEventListener("message", function(event) {
+
+    console.log("Received from parent:", event.data);
+
+    if (event.data.type === "MOVE_UNIT") {
+
+        unityInstance.SendMessage(
+            "BattleClientManager",
+            "MoveUnitCommand",
+            event.data.payload
+        );
+    }
+
+});
+
+
     </script>
   </body>
 </html>

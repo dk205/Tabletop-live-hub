@@ -154,7 +154,7 @@
         <div class="rightPanel">
 
             <div class="viewerHeader">
-                <h2>Interactive Battlefield55</h2>
+                <h2>Interactive Battlefield66</h2>
                 <p>Real-time digital battlefield viewer</p>
             </div>
 
@@ -183,29 +183,15 @@
         function moveUnit() {
            console.log("Button clicked");
            document.getElementById("message").innerText = "Hello World";
-          //  const command = "10-40-1,15,0,8";
+          function moveUnit() {
 
-            // If unityInstance is globally exposed (best case)
-          //  if (typeof unityInstance !== "undefined" && unityInstance) {
+    const iframe = document.querySelector(".unityContainer iframe");
 
-          //      unityInstance.SendMessage(
-           //         "BattleClientManager",
-          //          "MoveUnitCommand",
-          //          command
-        //        );
-
-        //        return;
-       //     }
-
-            // Fallback: iframe bridge (optional future-proofing)
-         //   const iframe = document.querySelector(".unityContainer iframe");
-
-         //   if (iframe && iframe.contentWindow) {
-         //       iframe.contentWindow.postMessage({
-          //          type: "MOVE_UNIT",
-          //          payload: command
-         //       }, "*");
-        //    }
+    iframe.contentWindow.postMessage({
+        type: "MOVE_UNIT",
+        payload: "10-40-1,15,0,8"
+    }, "*");
+}
         }
 
 
