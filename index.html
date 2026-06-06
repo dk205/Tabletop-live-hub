@@ -7,9 +7,7 @@
     <title>Tabletop Live Hub</title>
 
     <style>
-        * {
-            box-sizing: border-box;
-        }
+        * { box-sizing: border-box; }
 
         body {
             margin: 0;
@@ -23,11 +21,9 @@
             height: 60px;
             background: #141414;
             border-bottom: 1px solid #2c2c2c;
-
             display: flex;
             justify-content: space-between;
             align-items: center;
-
             padding: 0 20px;
         }
 
@@ -121,115 +117,115 @@
             color: #888;
             font-size: 12px;
         }
-
-
-
-
-
     </style>
 </head>
 
 <body>
 
-    <!-- HEADER -->
-    <header>
-        <div class="title">⚔ Tabletop Live Hub</div>
-        <div id="liveStatus">● CHECKING...</div>
-    </header>
+<header>
+    <div class="title">⚔ Tabletop Live Hub</div>
+    <div id="liveStatus">● CHECKING...</div>
+</header>
 
-    <!-- MAIN -->
-    <div class="container">
+<div class="container">
 
-        <!-- LEFT: YOUTUBE -->
-        <div class="leftPanel">
-            <iframe
-                src="https://www.youtube-nocookie.com/embed/wak4aJsvEEM"
-                title="YouTube Live Stream"
-                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                allowfullscreen>
-            </iframe>
-        </div>
-
-        <!-- RIGHT: UNITY -->
-        <div class="rightPanel">
-
-            <div class="viewerHeader">
-                <h2>Interactive Battlefield88</h2>
-                <p>Real-time digital battlefield viewer</p>
-            </div>
-
-
-            <div id="message" style="padding:10px; color:white;"></div>
-
-            <!-- CONTROLS -->
-            <div class="controls">
-                <button onclick="moveUnit()">Move Unit</button>
-            </div>
-
-            <div class="unityContainer">
-                <iframe src="unity/index.html"></iframe>
-            </div>
-
-        
-            <div class="footerInfo">
-                Tabletop Live Hub • Experimental RTS-style tabletop viewer system
-            </div>
-
-        </div>
+    <div class="leftPanel">
+        <iframe src="https://www.youtube-nocookie.com/embed/wak4aJsvEEM"></iframe>
     </div>
 
-    <script>
-        // 🔥 UNITY COMMAND
-        function moveUnit() {
-           console.log("Button clicked");
-           document.getElementById("message").innerText = "Hello World";
-        
-    const iframe = document.querySelector(".unityContainer iframe");
+    <div class="rightPanel">
 
-    iframe.contentWindow.postMessage({
+        <div class="viewerHeader">
+            <h2>Interactive Battlefield firebase</h2>
+            <p>Real-time digital battlefield viewer</p>
+        </div>
+
+        <div id="message" style="padding:10px;"></div>
+
+        <div class="controls">
+            <button onclick="moveUnit()">Move Unit</button>
+        </div>
+
+        <div class="unityContainer">
+            <iframe src="unity/index.html"></iframe>
+        </div>
+
+        <div class="footerInfo">
+            Tabletop Live Hub • Experimental RTS-style tabletop viewer system
+        </div>
+
+    </div>
+</div>
+
+<!-- ========================= -->
+<!-- 🔴 FIREBASE ADDITIONS START -->
+<!-- ========================= -->
+
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-database-compat.js"></script>
+
+<script>
+/* 🔴 NEW: Firebase config */
+const firebaseConfig = {
+    apiKey: "YOUR_API_KEY",
+    authDomain: "tabletop-server.firebaseapp.com",
+    databaseURL: "https://tabletop-server-default-rtdb.europe-west1.firebasedatabase.app/",
+    projectId: "tabletop-server"
+};
+
+/* 🔴 NEW: init Firebase */
+firebase.initializeApp(firebaseConfig);
+const db = firebase.database();
+
+/* 🔥 UPDATED BUTTON (now sends to Firebase instead of iframe directly) */
+function moveUnit() {
+    console.log("Button clicked");
+    document.getElementById("message").innerText = "Hello World";
+
+    /* 🔴 NEW: send command to Firebase */
+    db.ref("commands/move").set({
         type: "MOVE_UNIT",
-        payload: "10-40-1,15,0,8"
-    }, "*");
+        payload: "10-40-1,15,0,8",
+        timestamp: Date.now()
+    });
 }
-        
+</script>
 
+<!-- ======================= -->
+<!-- 🔴 FIREBASE ADDITIONS END -->
+<!-- ======================= -->
 
-        // 🔵 YOUTUBE LIVE STATUS
-        const API_KEY = "AIzaSyAgIvaNDbmMkoaLZ1D5mhr2yTXgx-JNpDo";
-        const CHANNEL_ID = "UCJf90pitXPeGyEpL1T7zfig";
+<script>
+const API_KEY = "AIzaSy...";
+const CHANNEL_ID = "UCJf90pitXPeGyEpL1T7zfig";
 
-        async function checkLiveStatus() {
+async function checkLiveStatus() {
+    const status = document.getElementById("liveStatus");
 
-            const status = document.getElementById("liveStatus");
+    try {
+        const response = await fetch(
+            `https://www.googleapis.com/youtube/v3/search?part=snippet&channelId=${CHANNEL_ID}&eventType=live&type=video&key=${API_KEY}`
+        );
 
-            try {
-                const response = await fetch(
-                    `https://www.googleapis.com/youtube/v3/search?part=snippet&channelId=${CHANNEL_ID}&eventType=live&type=video&key=${API_KEY}`
-                );
+        const data = await response.json();
 
-                const data = await response.json();
-
-                if (data.items && data.items.length > 0) {
-                    status.innerHTML = "● LIVE";
-                    status.style.color = "red";
-                } else {
-                    status.innerHTML = "● OFFLINE";
-                    status.style.color = "gray";
-                }
-
-            } catch (error) {
-                status.innerHTML = "● ERROR";
-                status.style.color = "orange";
-                console.error(error);
-            }
+        if (data.items && data.items.length > 0) {
+            status.innerHTML = "● LIVE";
+            status.style.color = "red";
+        } else {
+            status.innerHTML = "● OFFLINE";
+            status.style.color = "gray";
         }
 
-        checkLiveStatus();
-        setInterval(checkLiveStatus, 30000);
+    } catch (error) {
+        status.innerHTML = "● ERROR";
+        status.style.color = "orange";
+    }
+}
 
-    </script>
+checkLiveStatus();
+setInterval(checkLiveStatus, 30000);
+</script>
 
 </body>
-
 </html>
-
