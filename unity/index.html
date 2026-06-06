@@ -30,10 +30,19 @@
   </div>
 </div>
 
+<!-- 🔥 FIREBASE (NEW) -->
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-database-compat.js"></script>
+
 <script>
+
 let unityInstance = null;
 
 const canvas = document.querySelector("#unity-canvas");
+
+/* =========================
+   UNITY SETUP
+========================= */
 
 function unityShowBanner(msg, type) {
   const warningBanner = document.querySelector("#unity-warning");
@@ -67,7 +76,7 @@ const config = {
   showBanner: unityShowBanner
 };
 
-// Mobile setup
+/* Mobile setup */
 if (/iPhone|iPad|iPod|Android/i.test(navigator.userAgent)) {
   const meta = document.createElement("meta");
   meta.name = "viewport";
@@ -84,6 +93,7 @@ if (/iPhone|iPad|iPod|Android/i.test(navigator.userAgent)) {
 
 document.querySelector("#unity-loading-bar").style.display = "block";
 
+/* Load Unity */
 const script = document.createElement("script");
 script.src = loaderUrl;
 
@@ -93,6 +103,7 @@ script.onload = () => {
       100 * progress + "%";
   })
     .then((instance) => {
+
       unityInstance = instance;
 
       document.querySelector("#unity-loading-bar").style.display = "none";
@@ -100,6 +111,9 @@ script.onload = () => {
       document.querySelector("#unity-fullscreen-button").onclick = () => {
         unityInstance.SetFullscreen(1);
       };
+
+      console.log("Unity Ready ✔");
+
     })
     .catch((message) => {
       alert(message);
@@ -108,22 +122,46 @@ script.onload = () => {
 
 document.body.appendChild(script);
 
-window.addEventListener("message", function (event) {
-  console.log("MESSAGE ARRIVED:", event.data);
+/* =========================
+   🔥 FIREBASE SETUP (NEW)
+========================= */
+
+const firebaseConfig = {
+  apiKey: "YOUR_API_KEY",
+  authDomain: "tabletop-server.firebaseapp.com",
+  databaseURL: "https://tabletop-server-default-rtdb.europe-west1.firebasedatabase.app/",
+  projectId: "tabletop-server"
+};
+
+firebase.initializeApp(firebaseConfig);
+const db = firebase.database();
+
+/* =========================
+   🔥 FIREBASE LISTENER (NEW)
+========================= */
+
+db.ref("commands/move").on("value", (snapshot) => {
+
+  const data = snapshot.val();
+  if (!data) return;
+
+  console.log("Firebase command received:", data);
 
   if (!unityInstance) {
     console.warn("Unity not ready yet");
     return;
   }
 
-  if (event.data.type === "MOVE_UNIT") {
+  if (data.type === "MOVE_UNIT") {
+
     unityInstance.SendMessage(
       "BattleClientManager",
       "MoveUnitCommand",
-      event.data.payload
+      data.payload
     );
   }
 });
+
 </script>
 
 </body>
