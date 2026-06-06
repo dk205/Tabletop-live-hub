@@ -149,7 +149,7 @@
         <div class="rightPanel">
 
             <div class="viewerHeader">
-                <h2>Interactive Battlefield</h2>
+                <h2>Interactive Battlefield44</h2>
                 <p>Real-time digital battlefield viewer</p>
             </div>
 
@@ -162,6 +162,8 @@
                 <iframe src="unity/index.html"></iframe>
             </div>
 
+            <div id="message"></div>
+
             <div class="footerInfo">
                 Tabletop Live Hub • Experimental RTS-style tabletop viewer system
             </div>
@@ -172,19 +174,19 @@
     <script>
         // 🔥 UNITY COMMAND
         function moveUnit() {
-
-            const command = "10-40-1,15,0,8";
+           document.getElementById("message").innerText = "Hello World";
+          //  const command = "10-40-1,15,0,8";
 
             // If unityInstance is globally exposed (best case)
-            if (typeof unityInstance !== "undefined" && unityInstance) {
+          //  if (typeof unityInstance !== "undefined" && unityInstance) {
 
-                unityInstance.SendMessage(
-                    "BattleClientManager",
-                    "MoveUnitCommand",
-                    command
-                );
+          //      unityInstance.SendMessage(
+           //         "BattleClientManager",
+          //          "MoveUnitCommand",
+          //          command
+        //        );
 
-                return;
+        //        return;
             }
 
             // Fallback: iframe bridge (optional future-proofing)
