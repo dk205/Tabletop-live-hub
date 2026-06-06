@@ -121,6 +121,11 @@
             color: #888;
             font-size: 12px;
         }
+
+
+
+
+
     </style>
 </head>
 
@@ -149,9 +154,12 @@
         <div class="rightPanel">
 
             <div class="viewerHeader">
-                <h2>Interactive Battlefield44</h2>
+                <h2>Interactive Battlefield55</h2>
                 <p>Real-time digital battlefield viewer</p>
             </div>
+
+
+            <div id="message" style="padding:10px; color:white;"></div>
 
             <!-- CONTROLS -->
             <div class="controls">
@@ -162,8 +170,7 @@
                 <iframe src="unity/index.html"></iframe>
             </div>
 
-            <div id="message"></div>
-
+        
             <div class="footerInfo">
                 Tabletop Live Hub • Experimental RTS-style tabletop viewer system
             </div>
@@ -174,6 +181,7 @@
     <script>
         // 🔥 UNITY COMMAND
         function moveUnit() {
+           console.log("Button clicked");
            document.getElementById("message").innerText = "Hello World";
           //  const command = "10-40-1,15,0,8";
 
@@ -187,17 +195,17 @@
         //        );
 
         //        return;
-            }
+       //     }
 
             // Fallback: iframe bridge (optional future-proofing)
-            const iframe = document.querySelector(".unityContainer iframe");
+         //   const iframe = document.querySelector(".unityContainer iframe");
 
-            if (iframe && iframe.contentWindow) {
-                iframe.contentWindow.postMessage({
-                    type: "MOVE_UNIT",
-                    payload: command
-                }, "*");
-            }
+         //   if (iframe && iframe.contentWindow) {
+         //       iframe.contentWindow.postMessage({
+          //          type: "MOVE_UNIT",
+          //          payload: command
+         //       }, "*");
+        //    }
         }
 
 
