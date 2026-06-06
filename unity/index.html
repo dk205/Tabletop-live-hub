@@ -130,7 +130,7 @@
 
 window.addEventListener("message", function(event) {
 
-    console.log("Received from parent:", event.data);
+    console.log("MESSAGE ARRIVED", event.data);
 
     if (event.data.type === "MOVE_UNIT") {
 
@@ -140,9 +140,7 @@ window.addEventListener("message", function(event) {
             event.data.payload
         );
     }
-
 });
-
 
     </script>
   </body>
